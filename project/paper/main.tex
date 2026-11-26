@@ -1,0 +1,148 @@
+\documentclass{article}
+\usepackage[preprint,nonatbib]{neurips_2024}
+\makeatletter
+\renewcommand{\@noticestring}{Rutgers University, Massive Data Mining course project.}
+\makeatother
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,booktabs,graphicx}
+\usepackage[hidelinks]{hyperref}
+\title{AdaRetrieve: Sequential Retrieval and Reranking\\under Latency Budgets}
+\author{Anuj Bohra \qquad Krisha Borana \qquad Dongquan Yang\\Rutgers University, New Brunswick\\Massive Data Mining}
+\hypersetup{pdftitle={AdaRetrieve: Sequential Retrieval and Reranking under Latency Budgets},pdfauthor={Anuj Bohra, Krisha Borana and Dongquan Yang}}
+\newcommand{\datatable}[1]{\begingroup\setlength{\tabcolsep}{4pt}\input{#1-table}\endgroup}
+\newcommand{\widetable}[1]{\begingroup\setlength{\tabcolsep}{2.6pt}\input{#1-table}\endgroup}
+\begin{document}
+\maketitle
+\begin{abstract}
+Can a single intermediate decision improve retrieval enough to justify its cost? In our broad benchmark, fixed rank fusion achieved higher middle-budget utility than fully sequential control. We therefore gave a source-trained one-shot router one opportunity to revise its path after the first dense retrieval. Both policies reused the same BM25 ranking. Across three BEIR leave-one-domain-out folds (1,271 test queries), the revision raised equal-domain macro NDCG@10 by 0.0080--0.0089 and measured utility by 0.0079--0.0087 at the three tested budgets. Mean latency increased by 0.11--0.24 ms. SciFact contributed most of the gain. On FiQA, middle-budget utility fell slightly. These results describe an exploratory follow-up on previously studied collections.
+\end{abstract}
+
+\section{Introduction}
+A query whose lexical matches already answer it can finish after BM25. A query whose relevant documents use different terminology may benefit from a dense retrieval stage, even when that stage pays off only after fusion or reranking. Choosing a full path at the start keeps routing cheap. Choosing each action after seeing a new ranking gives the system more evidence, but the time spent acting and deciding also counts against the deadline. We compare these choices on a collection excluded from training, then test whether a single intermediate decision captures enough of the benefit to justify its cost.
+
+\section{Related work}
+BM25 ranks documents by lexical evidence \cite{bm25}. Reciprocal rank fusion combines the positions assigned by several retrievers \cite{rrf}, and a BERT cross-encoder can rescore the resulting query--document pairs \cite{bert}. Meng et al.\ \cite{trunc} study how far to truncate a retrieved list before reranking. Here the policy can also change which candidates enter the list and can stop before reranking. BEIR \cite{beir} supplies heterogeneous retrieval tasks on which to test whether those decisions transfer to another collection.
+
+\section{Method}
+\subsection{Actions and the serving budget}
+Each adaptive query starts with up to 20 BM25 candidates. The policy can expand lexical retrieval to return up to 64 candidates, retrieve 20 dense candidates and expand to 64, fuse the lists using reciprocal rank fusion (RRF, k = 60), rerank the top 8 and then up to 24 documents, or stop. Extending reranking scores only previously unscored candidates. A gradient-boosted model with 40 depth-three trees selects each sequential action from query features, score statistics, rank overlap and change, and remaining budget.
+
+The target utility for query $q$ with elapsed time $t_q$ and budget $B$ is
+\begin{equation}
+ U_q=\operatorname{NDCG@10}_q-0.035\,t_q/B-0.30\max(0,t_q/B-1).
+ \label{eq:u}
+\end{equation}
+We compute $U_q$ from the returned ranking and measured wall time before averaging across queries and domains. The execution guard admits the next action only if its estimated cost fits within the remaining budget. Runtime variation can still produce an overrun.
+
+\subsection{Learning from a finite-action oracle}
+At each legal prefix the training oracle assigns Stop the utility of the current ranking. For any feasible continuation it assigns the largest terminal utility reachable from that child. This credits a retrieval step that helps only after a later fusion or reranking step. The cost estimates are frozen medians from the source domains. Pruning infeasible children keeps every enumerated state within budget, so the overrun term in Equation~\ref{eq:u} is zero throughout the training table. At evaluation the same term charges each observed overrun.
+
+Both policies can use the same 30 terminal paths. The sequential policy observes intermediate rankings, while the one-shot policy chooses a path immediately after the initial BM25 ranking. The old full-grid router never split on path ID, causing every score to tie so argmax invariably picked Stop. The revised router fits a ridge regression for each path using its paired NDCG@10 gain over Stop. Six initial query and BM25 features determine the predicted gain, and the router subtracts the path's profiled time charge. The runtime guard can end a chosen path early. On source validation, it selected three to seven distinct paths per fold and budget and beat the best constant path in seven of nine settings under profiled costs.
+
+\subsection{One optional decision after dense retrieval}
+The one-shot and one-revision policies share the same root router and BM25 reuse. Their initial paths may differ because each timed run selects its default path based on its own elapsed time. Both fetch up to 64 BM25 candidates once, expose up to 20 until expansion, and use the same source-calibrated lexical costs. After a planned dense top-20 retrieval, a ridge model predicts suffix gains from scores and rank agreement. The router may switch once, including to Stop, if a feasible suffix improves predicted utility over the feasible default continuation by more than the frozen threshold. It never forces a dense probe.
+
+\section{Experiments}
+\subsection{Transfer design and evaluation}
+We report three independently timed T4 sessions. The broad benchmark compares sequential control with fixed pipelines, depth choices and a rank-overlap rule. A first routing follow-up tests a source-validated one-shot baseline. A second follow-up measures the effect of BM25 reuse and the incremental value of one revision. Each timing includes query retrieval, feature computation, policy decisions, neural inference and the return of results to the CPU. We compare policies within their own session.
+
+Each training fold uses 384 queries from each source domain. Each source contributes a further 96 validation queries. FiQA and NFCorpus supply official development splits. SciFact reserves 15\% of its training pool for validation. The three target test sets contain 300 SciFact, 323 NFCorpus and 648 FiQA queries. The tight, middle and loose budgets are 17/37/68 ms for SciFact and NFCorpus and 14/30/56 ms for FiQA. We give each test domain equal weight. The T4 runs use the frozen multi-qa-MiniLM-L6-cos-v1 encoder, exact FAISS inner-product search and the ms-marco-TinyBERT-L2-v2 cross-encoder. Neural inference uses FP16 and a 192-token cap. Source median costs define the three budgets as 35\%, 75\% and 140\% of full-path cost, rounded up to whole milliseconds. Models and indexes are warm, and each query runs alone.
+
+\subsection{Broad benchmark and the root-only comparison}
+On the broad benchmark at the middle budget, utility is 0.4076 for sequential control, 0.4224 for fixed RRF, and 0.2875 for RRF+CE24. Paired comparisons place sequential minus fixed RRF at -0.0148 (95\% CI $-$0.0246 to $-$0.0053) and sequential versus CE24 at +0.1201 (95\% CI +0.1089 to +0.1314). The absolute quality, latency and reranking workload explain this ordering in Table~\ref{tab:broad}.
+
+\begin{table}[htbp]\centering
+\caption{Broad benchmark at the middle budget. Each column is an equal-domain mean. NDCG, recall and MRR use rank 10. Mean and P95 latency are in ms. Pairs counts cross-encoder evaluations per query. Over is the percentage of queries exceeding their own budget.}
+\label{tab:broad}\widetable{broad}
+\end{table}
+
+In the first follow-up, the two routes and fixed RRF produced 8,897 live timings. At the middle budget the sequential policy gained 0.0145 NDCG@10 over the one-shot router, but took 26.0 versus 12.4 ms. Its utility difference was $-$0.0110, with a paired interval spanning zero. Fixed RRF had the highest middle-budget utility of these three methods. Tight-budget quality and utility favored one-shot routing, and the loose-budget intervals covered zero (Table~\ref{tab:root}).
+
+\begin{table}[htbp]\centering
+\caption{First routing follow-up. Each difference subtracts the one-shot ridge router from the sequential policy. Intervals use 2,000 paired query resamples within each fixed domain.}
+\label{tab:root}\datatable{root}
+\end{table}
+
+\subsection{BM25 reuse and one mid-course revision}
+In each fold, the first 48 validation queries from each source select the gain threshold. The other 48 are reserved for live confirmation. Thresholds are 0.025, 0.010 and 0.025 when SciFact, NFCorpus and FiQA are held out, respectively, at all three budgets. Across 4,320 source timings, sequential BM25 reuse reduced tight-budget mean latency by 5.79\% and raised utility by 0.00435, triggering the prespecified test of all five frozen policies. On its own, revision changed source utility by $-0.00110$, $+0.00224$ and $+0.00211$. The middle and loose gains fell below the 0.003 screening threshold.
+
+\begin{table}[htbp]\centering
+\caption{Second routing follow-up on the three held-out domains. Each of the 1,271 queries is measured once per method and budget. $N$ is NDCG@10, $U$ is measured utility and ms is mean end-to-end latency. RRF was timed in the earlier sessions.}
+\label{tab:routing}\widetable{routing}
+\end{table}
+
+Relative to one-shot routing with identical BM25 reuse, revision gained 0.00807, 0.00867 and 0.00786 in macro measured utility at the tight, middle and loose budgets. The corresponding NDCG@10 gains were 0.00801, 0.00890 and 0.00799. The second follow-up measured all five policies in randomized within-query order, totaling 19,065 timed calls. The paired intervals and added mean latency are in Table~\ref{tab:paired}. At the middle budget, the original sequential policy still attained higher NDCG@10 than the revised policy (0.4438 versus 0.4365).
+
+\begin{table}[htbp]\centering
+\caption{End-to-end differences between the policy allowing one revision and the one-shot policy with the same BM25 reuse. Revised is the equal-domain percentage of queries that changed their suffix. Intervals use 4,000 paired within-domain query resamples.}
+\label{tab:paired}\datatable{paired}
+\end{table}
+
+Gains concentrated on SciFact, with smaller gains on NFCorpus despite its more frequent revisions (Table~\ref{tab:domain}). FiQA showed unchanged middle-budget mean NDCG@10 and a 0.00015 drop in utility. At its tight 14 ms budget, no query changed its suffix, yet the two policies selected different initial plans for 16 of 648 queries. The revised policy exceeded that budget on 522 queries, by 3.97 ms on average among overruns. Each run's elapsed time can affect both its initial plan and where its execution guard stops it.
+
+\begin{table}[htbp]\centering
+\caption{Where the gain occurred. Each utility difference compares the two shared-BM25 policies on the indicated domain. The last column counts explicit revisions at the tight, middle and loose budgets.}
+\label{tab:domain}\datatable{domain}
+\end{table}
+
+\subsection{Oracle size and construction cost}
+\begin{table}[htbp]\centering
+\caption{Oracle supervision and cached construction cost, per fold of 768 distinct training queries. Each row of the oracle table represents a state and contains one target value per feasible action, including Stop, which may be the sole feasible action. MiB denotes compressed size. Times include enumeration and writing.}
+\label{tab:oracle}\datatable{oracle}
+\end{table}
+Across the three folds, the oracle stores 274,218 supervised action values in 140,565 states. A cold rebuild on the T4 took 270.7 s wall time, including 245.8 s to construct shared indexes and query scores. Total process CPU time was 360.5 s. The cold run started with downloaded data, model weights and frozen cost profiles. Policy fitting and live test execution are separate costs.
+
+\section{Discussion}
+The most informative contrast holds both the root router and the BM25 implementation fixed. It shows what the opportunity to reconsider a path buys at serving time. Reusing lexical results alone had less consistent end-to-end effects. A lower estimated expansion cost can admit a longer path, and routes that never expand gain no time from avoiding a second lexical search. SciFact and NFCorpus also show that revising more frequently does not necessarily yield more utility.
+
+The broad benchmark's learned stopping rule also affects budget compliance. Removing it changes middle-budget macro NDCG@10 by less than 0.001 while increasing the overrun rate from 23.8\% to 35.6\%. On FiQA, the sequential policy exceeded 30 ms on 385 of 648 queries in that session. Excess latency averaged 3.84 ms among overruns and 2.28 ms over all queries. Appendix~\ref{app:diagnostics} gives the full serving breakdown and observed frontiers.
+
+\section{Limitations and future work}
+The three collections contain 3,633 to 57,638 documents. One deterministic training sample per size and a single warm timing per configuration limit what can be inferred about sampling variability and deployment latency. Bootstrap intervals condition on these domains, fitted models and recorded timings. The three target collections had already been evaluated when the follow-ups were designed. Only source labels were used to fit and tune each fold. Differences between the fully sequential GBDT and root-only ridge router also reflect their different model classes.
+
+A prospective test could freeze the revision policy before selecting additional collections, then repeat timings across runtimes and hardware. Reporting both the frequency and magnitude of overruns would show whether tail-aware cost estimates improve deadline compliance, especially on collections with a slow initial retrieval. Repeating the source splits would also quantify how much of the apparent gain depends on the small validation samples.
+
+\section{Conclusion}
+For the equal-weight mean over the three held-out domains, giving the reused one-shot router one opportunity to revise increased measured utility at all three tested budgets. Most of the gain came from SciFact. The fully sequential policy attained the highest middle-budget ranking quality among the five policies in the last session. Its longer running time, and the strong utility of fixed RRF in the earlier runs, make the choice of router depend on which outcome the application values.
+
+\begin{thebibliography}{9}
+\bibitem{beir} N. Thakur, N. Reimers, A. R{\"u}ckl{\'e}, A. Srivastava, and I. Gurevych. \href{https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/65b9eea6e1cc6bb9f0cd2a47751a186f-Paper-round2.pdf}{BEIR: A heterogeneous benchmark for zero-shot evaluation of information retrieval models}. NeurIPS Datasets and Benchmarks, 2021.
+\bibitem{bm25} S. Robertson and H. Zaragoza. \href{https://doi.org/10.1561/1500000019}{The probabilistic relevance framework: BM25 and beyond}. Foundations and Trends in Information Retrieval, 3(4):333--389, 2009.
+\bibitem{rrf} G. V. Cormack, C. L. A. Clarke, and S. B{\"u}ttcher. \href{https://doi.org/10.1145/1571941.1572114}{Reciprocal rank fusion outperforms Condorcet and individual rank learning methods}. SIGIR, 2009.
+\bibitem{bert} R. Nogueira and K. Cho. \href{https://arxiv.org/abs/1901.04085}{Passage re-ranking with BERT}. arXiv:1901.04085, 2019.
+\bibitem{trunc} C. Meng, N. Arabzadeh, A. Askari, M. Aliannejadi, and M. de Rijke. \href{https://arxiv.org/abs/2404.18185}{Ranked list truncation for large language model-based re-ranking}. SIGIR, 2024.
+\end{thebibliography}
+
+\clearpage
+\appendix
+\section{Serving, frontiers and source learning curves}\label{app:diagnostics}
+\begin{table}[h!]\centering
+\caption{Broad benchmark, sequential policy. Over/total gives the number of overrunning queries. Excess/all averages $\max(0,t_q-B)$ over all queries. Excess/over uses only queries exceeding $B$. All times are ms.}
+\datatable{serving}
+\end{table}
+
+\begin{figure}[h!]\centering
+\includegraphics[width=\linewidth]{quality_latency.png}
+\caption{Broad benchmark. Dotted segments join the observed nondominated quality--latency points across all ten main methods. Vertical bars are marginal 95\% query intervals for NDCG@10. On NFCorpus at the middle budget, the overlap rule (0.33484 in 16.19 ms) dominates the sequential point (0.33445 in 24.91 ms) by point estimate.}\label{fig:broad}
+\end{figure}
+\begin{figure}[h!]\centering
+\includegraphics[width=\linewidth]{router_frontier.png}
+\caption{First routing follow-up. Domain-level frontiers compare sequential control, one-shot routing and fixed RRF within this session. Budget guards can shorten the chosen path. Points represent rankings actually returned.}\label{fig:root}
+\end{figure}
+\clearpage
+\section{Source confirmation and sensitivity}
+On source-training queries that request both lexical depths, BM25 reuse reduces the median combined time from 1.384 to 0.715 ms on SciFact, from 0.532 to 0.275 ms on NFCorpus, and from 11.279 to 5.611 ms on FiQA. The rankings agree in the paired checks. Reuse also changes which actions fit the budget, so the end-to-end saving depends on the router.
+\begin{table}[h!]\centering
+\caption{Live source confirmation. Entries give the change from adding each component to its matched baseline. The same 144 distinct source queries occur in two folds each.}
+\datatable{source}
+\end{table}
+
+\begin{table}[h!]\centering
+\caption{Sequential ablations at the middle budget in the broad benchmark. The hard feasibility mask remains active when budget features are removed.}
+\datatable{ablation}
+\end{table}
+\begin{figure}[h!]\centering
+\includegraphics[width=\linewidth]{learning_curve.png}
+\caption{Source-validation utility at increasing numbers of training queries per source. Curves use profiled costs. For NFCorpus held out, the middle-budget values at 64, 128 and 384 queries are 0.4723, 0.4218 and 0.4598. At 384, the middle-budget gaps to the source-validation oracle span 0.0827--0.1478 across folds.}\label{fig:learn}
+\end{figure}
+\end{document}

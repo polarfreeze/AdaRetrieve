@@ -1,0 +1,15 @@
+{
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "python": "3.13.16",
+  "packages": {
+    "numpy": "2.4.6",
+    "scipy": "1.16.3",
+    "scikit-learn": "1.6.1",
+    "faiss-cpu": "1.16.0",
+    "transformers": "5.22.1",
+    "torch": "2.14.1+cu130",
+    "tokenizers": "0.23.3"
+  },
+  "gpu": "Tesla T4, 15360 MiB, 580.82.07",
+  "cpu": "model name\t: Intel(R) Xeon(R) CPU @ 2.00GHz"
+}

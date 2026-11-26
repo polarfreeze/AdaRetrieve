@@ -1,0 +1,77 @@
+{
+  "scifact": {
+    "source_queries": 768,
+    "state_rows": 46399,
+    "supervised_actions": 90494,
+    "checked_continuation_values": 44095,
+    "over_budget_oracle_states": 0,
+    "path_lengths": {
+      "0": 2304,
+      "1": 6849,
+      "2": 11306,
+      "3": 12884,
+      "4": 8448,
+      "5": 3840,
+      "6": 768
+    },
+    "test_queries": 300,
+    "timed_decisions_or_fixed_runs": 8700,
+    "budgets_ms": [
+      17,
+      37,
+      68
+    ],
+    "source_validated_router_paths": 30,
+    "source_validation_query_budget_records": 576
+  },
+  "nfcorpus": {
+    "source_queries": 768,
+    "state_rows": 46848,
+    "supervised_actions": 91392,
+    "checked_continuation_values": 44544,
+    "over_budget_oracle_states": 0,
+    "path_lengths": {
+      "0": 2304,
+      "1": 6912,
+      "2": 11520,
+      "3": 13056,
+      "4": 8448,
+      "5": 3840,
+      "6": 768
+    },
+    "test_queries": 323,
+    "timed_decisions_or_fixed_runs": 9367,
+    "budgets_ms": [
+      17,
+      37,
+      68
+    ],
+    "source_validated_router_paths": 30,
+    "source_validation_query_budget_records": 576
+  },
+  "fiqa": {
+    "source_queries": 768,
+    "state_rows": 47318,
+    "supervised_actions": 92332,
+    "checked_continuation_values": 45014,
+    "over_budget_oracle_states": 0,
+    "path_lengths": {
+      "0": 2304,
+      "1": 6849,
+      "2": 11371,
+      "3": 12970,
+      "4": 9216,
+      "5": 3840,
+      "6": 768
+    },
+    "test_queries": 648,
+    "timed_decisions_or_fixed_runs": 18792,
+    "budgets_ms": [
+      14,
+      30,
+      56
+    ],
+    "source_validated_router_paths": 30,
+    "source_validation_query_budget_records": 576
+  }
+}

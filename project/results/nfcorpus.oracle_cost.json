@@ -1,0 +1,21 @@
+{
+  "queries": 768,
+  "states": 46848,
+  "action_values": 91392,
+  "source_counts": {
+    "scifact": {
+      "queries": 384,
+      "action_values": 45696
+    },
+    "fiqa": {
+      "queries": 384,
+      "action_values": 45696
+    }
+  },
+  "bytes": 1048891,
+  "distinct_scored_pairs_for_these_queries": 35164,
+  "wall_s": 7.213521311000022,
+  "process_cpu_s": 7.164257464000002,
+  "paths_evaluated": 46848,
+  "action_values_per_query": 119.0
+}

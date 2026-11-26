@@ -1,0 +1,115 @@
+{
+  "initial_state": "Verified local ZIP files and downloaded model weights available; all experiment indexes, scores and oracle tables empty. Reuse the frozen serving cost profiles and budgets.",
+  "gpu": "Tesla T4",
+  "domains": {
+    "scifact": {
+      "wall_s": 8.154570423999985,
+      "cpu_s": 8.108431670000016,
+      "bytes": 1105155,
+      "queries": 768,
+      "states": 46399,
+      "action_values": 90494
+    },
+    "nfcorpus": {
+      "wall_s": 8.006495253999901,
+      "cpu_s": 7.952099381999972,
+      "bytes": 1048891,
+      "queries": 768,
+      "states": 46848,
+      "action_values": 91392
+    },
+    "fiqa": {
+      "wall_s": 8.746820278000087,
+      "cpu_s": 8.647960770999987,
+      "bytes": 1075364,
+      "queries": 768,
+      "states": 47318,
+      "action_values": 92332
+    }
+  },
+  "cache_phase_wall_s": 245.7623555749999,
+  "replicate_cache_stages": {
+    "model_loading": {
+      "wall_s": 2.813343173000021,
+      "process_cpu_s": 2.3368635079999995
+    },
+    "device": "Tesla T4",
+    "torch": "2.14.1+cu130",
+    "encoders": [
+      [
+        "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
+        "b207367332321f8e44f96e224ef15bc607f4dbf0"
+      ],
+      [
+        "cross-encoder/ms-marco-TinyBERT-L2-v2",
+        "81d1926f67cb8eee2c2be17ca9f793c7c3bd20cc"
+      ]
+    ],
+    "note": "Stage wall time on a T4-backed runtime; includes tokenization and I/O. GPU-stage wall time is not kernel time.",
+    "scifact": {
+      "bm25": {
+        "wall_s": 0.8052950260000671,
+        "process_cpu_s": 0.8017113269999996
+      },
+      "corpus_encoding_and_faiss": {
+        "wall_s": 8.739922295000042,
+        "process_cpu_s": 11.627100790999998
+      },
+      "query_cache_runs": [
+        {
+          "new_queries": 780,
+          "wall_s": 48.04509738399997,
+          "process_cpu_s": 71.64739985499999
+        }
+      ],
+      "queries": 780,
+      "scored_pairs": 35148,
+      "index_bytes": 13668951,
+      "query_cache_bytes": 1644927
+    },
+    "nfcorpus": {
+      "bm25": {
+        "wall_s": 0.6148465520000173,
+        "process_cpu_s": 0.614884755999995
+      },
+      "corpus_encoding_and_faiss": {
+        "wall_s": 5.509533291000025,
+        "process_cpu_s": 8.175506967000004
+      },
+      "query_cache_runs": [
+        {
+          "new_queries": 803,
+          "wall_s": 41.143394902999944,
+          "process_cpu_s": 62.01866909500001
+        }
+      ],
+      "queries": 803,
+      "scored_pairs": 30759,
+      "index_bytes": 9879881,
+      "query_cache_bytes": 1438599
+    },
+    "fiqa": {
+      "bm25": {
+        "wall_s": 6.36120606999998,
+        "process_cpu_s": 6.322058806000001
+      },
+      "corpus_encoding_and_faiss": {
+        "wall_s": 62.976408224999886,
+        "process_cpu_s": 80.634983398
+      },
+      "query_cache_runs": [
+        {
+          "new_queries": 1128,
+          "wall_s": 66.63745563199996,
+          "process_cpu_s": 89.49180718
+        }
+      ],
+      "queries": 1128,
+      "scored_pairs": 52319,
+      "index_bytes": 128735829,
+      "query_cache_bytes": 2406196
+    }
+  },
+  "full_wall_s": 270.6708541559999,
+  "full_process_cpu_s": 360.47193113
+}

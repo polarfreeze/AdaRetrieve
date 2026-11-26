@@ -1,0 +1,82 @@
+{
+  "model_loading": {
+    "wall_s": 14.377898494000021,
+    "process_cpu_s": 8.492182999
+  },
+  "device": "Tesla T4",
+  "torch": "2.14.1+cu130",
+  "encoders": [
+    [
+      "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
+      "b207367332321f8e44f96e224ef15bc607f4dbf0"
+    ],
+    [
+      "cross-encoder/ms-marco-TinyBERT-L2-v2",
+      "81d1926f67cb8eee2c2be17ca9f793c7c3bd20cc"
+    ]
+  ],
+  "note": "Stage wall time on a T4-backed runtime; includes tokenization and I/O. GPU-stage wall time is not kernel time.",
+  "scifact": {
+    "bm25": {
+      "wall_s": 0.805323784000052,
+      "process_cpu_s": 0.8015624330000009
+    },
+    "corpus_encoding_and_faiss": {
+      "wall_s": 9.473211823999975,
+      "process_cpu_s": 11.601854384
+    },
+    "query_cache_runs": [
+      {
+        "new_queries": 780,
+        "wall_s": 45.92402792600001,
+        "process_cpu_s": 70.348957644
+      }
+    ],
+    "queries": 780,
+    "scored_pairs": 35148,
+    "index_bytes": 13668951,
+    "query_cache_bytes": 1644927
+  },
+  "nfcorpus": {
+    "bm25": {
+      "wall_s": 0.5962194409999029,
+      "process_cpu_s": 0.5955818030000017
+    },
+    "corpus_encoding_and_faiss": {
+      "wall_s": 6.538410345999978,
+      "process_cpu_s": 8.347467848000008
+    },
+    "query_cache_runs": [
+      {
+        "new_queries": 803,
+        "wall_s": 40.672233073999905,
+        "process_cpu_s": 61.46152035600001
+      }
+    ],
+    "queries": 803,
+    "scored_pairs": 30759,
+    "index_bytes": 9879881,
+    "query_cache_bytes": 1438599
+  },
+  "fiqa": {
+    "bm25": {
+      "wall_s": 5.603746926999975,
+      "process_cpu_s": 5.583082673000007
+    },
+    "corpus_encoding_and_faiss": {
+      "wall_s": 62.166774063999924,
+      "process_cpu_s": 79.69541625099998
+    },
+    "query_cache_runs": [
+      {
+        "new_queries": 1128,
+        "wall_s": 66.07023686700006,
+        "process_cpu_s": 88.26320481399998
+      }
+    ],
+    "queries": 1128,
+    "scored_pairs": 52319,
+    "index_bytes": 128735829,
+    "query_cache_bytes": 2406196
+  }
+}

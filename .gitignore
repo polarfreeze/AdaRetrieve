@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+.env
+*.log
+*.part
+*.tmp
+*.aux
+*.out
+*.zip
+/project/artifacts/
+/project/cache/
+/project/data/raw/

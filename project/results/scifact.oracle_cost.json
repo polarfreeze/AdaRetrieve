@@ -1,0 +1,21 @@
+{
+  "queries": 768,
+  "states": 46399,
+  "action_values": 90494,
+  "source_counts": {
+    "nfcorpus": {
+      "queries": 384,
+      "action_values": 44798
+    },
+    "fiqa": {
+      "queries": 384,
+      "action_values": 45696
+    }
+  },
+  "bytes": 1105155,
+  "distinct_scored_pairs_for_these_queries": 32647,
+  "wall_s": 8.072441773000037,
+  "process_cpu_s": 7.938092287,
+  "paths_evaluated": 46399,
+  "action_values_per_query": 117.83072916666667
+}

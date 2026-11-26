@@ -1,0 +1,21 @@
+{
+  "queries": 768,
+  "states": 47318,
+  "action_values": 92332,
+  "source_counts": {
+    "scifact": {
+      "queries": 384,
+      "action_values": 46464
+    },
+    "nfcorpus": {
+      "queries": 384,
+      "action_values": 45868
+    }
+  },
+  "bytes": 1075364,
+  "distinct_scored_pairs_for_these_queries": 32197,
+  "wall_s": 6.808264229999963,
+  "process_cpu_s": 6.797742155999998,
+  "paths_evaluated": 47318,
+  "action_values_per_query": 120.22395833333333
+}

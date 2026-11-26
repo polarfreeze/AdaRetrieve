@@ -1,0 +1,13 @@
+{
+  "gpu": "Tesla T4",
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "clock": "perf_counter",
+  "threads_faiss": 1,
+  "packages": {
+    "scikit-learn": "1.6.1",
+    "torch": "2.14.1+cu130",
+    "transformers": "5.22.1",
+    "faiss-cpu": "1.16.0"
+  }
+}

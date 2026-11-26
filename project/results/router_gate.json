@@ -1,0 +1,182 @@
+{
+  "scifact": {
+    "sources": [
+      "nfcorpus",
+      "fiqa"
+    ],
+    "passed": true,
+    "levels": [
+      {
+        "budget": 17,
+        "queries": 192,
+        "routes": {
+          "dense20/fuse": 143,
+          "dense20": 48,
+          "stop": 1
+        },
+        "distinguish": 192,
+        "utility": 0.2741789317012995,
+        "fixed": 0.2649690890078813,
+        "stop": 0.21343299998948848,
+        "validation_best_fixed": 0.26496908900788163,
+        "validation_best_path": "dense20/fuse"
+      },
+      {
+        "budget": 37,
+        "queries": 192,
+        "routes": {
+          "dense20/fuse": 129,
+          "dense20": 48,
+          "dense20/dense64/fuse": 14,
+          "lex64/dense20/fuse/rerank8": 1
+        },
+        "distinguish": 192,
+        "utility": 0.2872954493858255,
+        "fixed": 0.27854599492998994,
+        "stop": 0.21708118937742923,
+        "validation_best_fixed": 0.28013444892939326,
+        "validation_best_path": "lex64/dense20/fuse"
+      },
+      {
+        "budget": 68,
+        "queries": 192,
+        "routes": {
+          "dense20/fuse": 119,
+          "dense20": 47,
+          "dense20/dense64/fuse": 14,
+          "lex64/dense20/fuse/rerank8": 7,
+          "dense20/fuse/rerank8": 3,
+          "lex64/dense20/fuse": 1,
+          "dense20/rerank8": 1
+        },
+        "distinguish": 192,
+        "utility": 0.29516494866208404,
+        "fixed": 0.283807045974807,
+        "stop": 0.21849486276525623,
+        "validation_best_fixed": 0.29047846266392513,
+        "validation_best_path": "lex64/dense20/fuse/rerank8"
+      }
+    ],
+    "model_sha256": "66c4e3ea03f04c79e9f1b6970d2463c14b75806b16495e7796c794ce3664345d"
+  },
+  "nfcorpus": {
+    "sources": [
+      "scifact",
+      "fiqa"
+    ],
+    "passed": true,
+    "levels": [
+      {
+        "budget": 17,
+        "queries": 192,
+        "routes": {
+          "stop": 40,
+          "dense20/fuse": 130,
+          "dense20": 21,
+          "rerank8": 1
+        },
+        "distinguish": 192,
+        "utility": 0.4783591454674076,
+        "fixed": 0.4697755935455655,
+        "stop": 0.43007900620812656,
+        "validation_best_fixed": 0.4697755935455641,
+        "validation_best_path": "dense20/fuse"
+      },
+      {
+        "budget": 37,
+        "queries": 192,
+        "routes": {
+          "dense20/fuse": 140,
+          "stop": 29,
+          "dense20": 20,
+          "dense20/rerank8": 2,
+          "rerank8": 1
+        },
+        "distinguish": 192,
+        "utility": 0.487577378306326,
+        "fixed": 0.4837462667172941,
+        "stop": 0.4339604138392743,
+        "validation_best_fixed": 0.48374626671729576,
+        "validation_best_path": "dense20/fuse"
+      },
+      {
+        "budget": 68,
+        "queries": 192,
+        "routes": {
+          "dense20/fuse": 143,
+          "stop": 26,
+          "dense20": 19,
+          "dense20/rerank8": 3,
+          "rerank8": 1
+        },
+        "distinguish": 192,
+        "utility": 0.48938081602131484,
+        "fixed": 0.48915990257133896,
+        "stop": 0.4354644592963441,
+        "validation_best_fixed": 0.4891599025713398,
+        "validation_best_path": "dense20/fuse"
+      }
+    ],
+    "model_sha256": "42666e5f18f7ec86cfa481753ced3ff280ff226c5b5089072345e1c0eb04fc05"
+  },
+  "fiqa": {
+    "sources": [
+      "scifact",
+      "nfcorpus"
+    ],
+    "passed": true,
+    "levels": [
+      {
+        "budget": 14,
+        "queries": 192,
+        "routes": {
+          "stop": 52,
+          "dense20/fuse": 124,
+          "lex64/dense20/dense64/fuse": 12,
+          "dense20/dense64/fuse": 4
+        },
+        "distinguish": 192,
+        "utility": 0.4784067187772856,
+        "fixed": 0.47220734137484865,
+        "stop": 0.46372037901943847,
+        "validation_best_fixed": 0.4763904629211477,
+        "validation_best_path": "dense20/dense64/fuse"
+      },
+      {
+        "budget": 30,
+        "queries": 192,
+        "routes": {
+          "stop": 45,
+          "dense20/fuse": 127,
+          "lex64/dense20/dense64/fuse": 14,
+          "dense20/dense64/fuse": 3,
+          "lex64/dense20/fuse": 3
+        },
+        "distinguish": 192,
+        "utility": 0.4827333108094564,
+        "fixed": 0.4804315440415732,
+        "stop": 0.46464825268612137,
+        "validation_best_fixed": 0.4852880449212544,
+        "validation_best_path": "dense20/dense64/fuse"
+      },
+      {
+        "budget": 56,
+        "queries": 192,
+        "routes": {
+          "stop": 44,
+          "dense20/fuse": 110,
+          "lex64/dense20/dense64/fuse": 15,
+          "lex64/dense20/fuse": 3,
+          "dense20/dense64/fuse": 20
+        },
+        "distinguish": 192,
+        "utility": 0.4853801748490791,
+        "fixed": 0.48377262637493,
+        "stop": 0.4650252013632113,
+        "validation_best_fixed": 0.4889026876088,
+        "validation_best_path": "dense20/dense64/fuse"
+      }
+    ],
+    "model_sha256": "3aa2dbebbeffaa95078975f49f48a5566117be21cfb849d8ec92b45073e2b2ad"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "scifact": {
+    "format": "BEIR official Hugging Face files repacked",
+    "sources": [
+      {
+        "url": "https://huggingface.co/datasets/BeIR/scifact/resolve/984eed826375f18d27936c4a32bf0f8491e3f414/corpus.jsonl.gz",
+        "bytes": 2758600,
+        "upstream_digest": "2f4a2a264485e5b5b95ae9cd5534817447757423991a4767d6da811539c0853e",
+        "sha256": "2f4a2a264485e5b5b95ae9cd5534817447757423991a4767d6da811539c0853e"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/scifact/resolve/984eed826375f18d27936c4a32bf0f8491e3f414/queries.jsonl.gz",
+        "bytes": 49271,
+        "upstream_digest": "c29574b9cb8fdf043df8494f689de15f4604ac4b585eb34bda9b6a389aa6c4d3",
+        "sha256": "c29574b9cb8fdf043df8494f689de15f4604ac4b585eb34bda9b6a389aa6c4d3"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/scifact-qrels/resolve/2938d17dc3b09882fdb8c12bbbe2e2dc0e75a029/test.tsv",
+        "bytes": 5389,
+        "upstream_digest": "c62f58c75f10c0cee23483b7269bff2902ae4080",
+        "sha256": "0864bb985e0ca2367ba217977e72004d549054b2b06666ed9d4825ac7c21284c"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/scifact-qrels/resolve/2938d17dc3b09882fdb8c12bbbe2e2dc0e75a029/train.tsv",
+        "bytes": 14502,
+        "upstream_digest": "3d7882aacef0cbe3befa238357e4bb165165d8ba",
+        "sha256": "a53f2114831916c096b6c37d9e54da68cef4efdcdbd5ed46533601af972acf1d"
+      }
+    ],
+    "official_md5_verified": false,
+    "documents": 5183,
+    "query_records": 1109,
+    "splits": {
+      "test": {
+        "queries": 300,
+        "judgments": 339
+      },
+      "train": {
+        "queries": 809,
+        "judgments": 919
+      }
+    },
+    "file": "scifact.zip",
+    "bytes": 2818254,
+    "md5": "543a60e217bb1d3dd05f3891f3d2130c",
+    "sha256": "01e4acb4ba177e86be707af49be312c8c889e9a4c5d0b0b9adcc240936d34487"
+  },
+  "nfcorpus": {
+    "format": "BEIR official Hugging Face files repacked",
+    "sources": [
+      {
+        "url": "https://huggingface.co/datasets/BeIR/nfcorpus/resolve/e28763e68d85db0fa71652ba3c4afabf8c5b3bb7/corpus.jsonl.gz",
+        "bytes": 1978293,
+        "upstream_digest": "ae4d6ab2ab88d880e7e180776c956a09c19c43a703457742cd850d2422035802",
+        "sha256": "ae4d6ab2ab88d880e7e180776c956a09c19c43a703457742cd850d2422035802"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/nfcorpus/resolve/e28763e68d85db0fa71652ba3c4afabf8c5b3bb7/queries.jsonl.gz",
+        "bytes": 79080,
+        "upstream_digest": "baba3504a2736b0e32265962f04acc4fecfaf9649e0ea08e49ff441246f75364",
+        "sha256": "baba3504a2736b0e32265962f04acc4fecfaf9649e0ea08e49ff441246f75364"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/nfcorpus-qrels/resolve/a451b3b26d3ae1358f259c1a3a4dd61fcea35a65/dev.tsv",
+        "bytes": 258218,
+        "upstream_digest": "4c8b9ce3ecc4f26ea4a1d9a6c9e48a9adcc0458c",
+        "sha256": "b1d38b5e8f78c4a5820bce2b7ec2db54911d7690dc601e76811846b211180bd8"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/nfcorpus-qrels/resolve/a451b3b26d3ae1358f259c1a3a4dd61fcea35a65/test.tsv",
+        "bytes": 279572,
+        "upstream_digest": "615081e6e8a76050060caf45d23fe68342d8d360",
+        "sha256": "f8fba6ef3d4dd9c3a242a8ba4ae38276fc3622fce7dcbae764766d564542fd2a"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/nfcorpus-qrels/resolve/a451b3b26d3ae1358f259c1a3a4dd61fcea35a65/train.tsv",
+        "bytes": 2504643,
+        "upstream_digest": "d61fa14bd70ce45480cf5a02a5d0021b78e2d610",
+        "sha256": "6336b80f9bffc4f063f3aa450047ad35c0b7c534efe4a6ba35e16dbace047f6a"
+      }
+    ],
+    "official_md5_verified": false,
+    "documents": 3633,
+    "query_records": 3237,
+    "splits": {
+      "dev": {
+        "queries": 324,
+        "judgments": 11385
+      },
+      "test": {
+        "queries": 323,
+        "judgments": 12334
+      },
+      "train": {
+        "queries": 2590,
+        "judgments": 110575
+      }
+    },
+    "file": "nfcorpus.zip",
+    "bytes": 2449480,
+    "md5": "0dde9774ed0caeb4f655d1bc583fd6ea",
+    "sha256": "45b3f24cdab6e3dbe327bed627293a030398fd8c49c873ecff7184ad691203b5"
+  },
+  "fiqa": {
+    "format": "BEIR official Hugging Face files repacked",
+    "sources": [
+      {
+        "url": "https://huggingface.co/datasets/BeIR/fiqa/resolve/e31855201132ea2a257d7df77c828d7c02427521/corpus.jsonl.gz",
+        "bytes": 17662437,
+        "upstream_digest": "6d2c7e27aeb8c646791178e3e5591a373813642f38d9c992c0a4f6cbf4092f72",
+        "sha256": "6d2c7e27aeb8c646791178e3e5591a373813642f38d9c992c0a4f6cbf4092f72"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/fiqa/resolve/e31855201132ea2a257d7df77c828d7c02427521/queries.jsonl.gz",
+        "bytes": 193723,
+        "upstream_digest": "a683bbedd2fd3b1fcb1a44fbd706daf9aff27291cd99e7a086b3cf7624785acb",
+        "sha256": "a683bbedd2fd3b1fcb1a44fbd706daf9aff27291cd99e7a086b3cf7624785acb"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/fiqa-qrels/resolve/252958f2d646e22cab6d0c72dd3f0d5de6d0655a/dev.tsv",
+        "bytes": 18327,
+        "upstream_digest": "abb5799d5c1105cf2663ca9f01e1917b18f565e1",
+        "sha256": "03b27e547cd29dc721c3b93ce8ddd70df6b2d0ce954d8ef3659d386e8cd72c11"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/fiqa-qrels/resolve/252958f2d646e22cab6d0c72dd3f0d5de6d0655a/test.tsv",
+        "bytes": 25256,
+        "upstream_digest": "4e4ef51a72222ce611f6c36b8c7c02d32e370e81",
+        "sha256": "6adc2a640dcdd22bb8b3858f89107adef2a7c3db20a63550dfa7a0f71e379e44"
+      },
+      {
+        "url": "https://huggingface.co/datasets/BeIR/fiqa-qrels/resolve/252958f2d646e22cab6d0c72dd3f0d5de6d0655a/train.tsv",
+        "bytes": 209842,
+        "upstream_digest": "866241ace964783bb3a8b2b143b2727345fc759b",
+        "sha256": "e46a99529aa61b12e086a5c057e4e0ecaeda9502e53d5fe855efce778f1ec59a"
+      }
+    ],
+    "official_md5_verified": false,
+    "documents": 57638,
+    "query_records": 6648,
+    "splits": {
+      "dev": {
+        "queries": 500,
+        "judgments": 1238
+      },
+      "test": {
+        "queries": 648,
+        "judgments": 1706
+      },
+      "train": {
+        "queries": 5500,
+        "judgments": 14166
+      }
+    },
+    "file": "fiqa.zip",
+    "bytes": 17963679,
+    "md5": "37d79c0030b5659deb745dc2d3a5cbe0",
+    "sha256": "abfad2b135428a4599e72bddf3b88994a51ea755aa11d705dcb2ac0aef1e2d4b"
+  }
+}

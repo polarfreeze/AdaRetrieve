@@ -1,0 +1,14 @@
+{
+  "gpu": "Tesla T4",
+  "python": "3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "faiss-cpu": "1.16.0",
+    "scikit-learn": "1.6.1",
+    "transformers": "5.22.1",
+    "numpy": "2.4.6"
+  },
+  "seed": "reuse1",
+  "protocol_sha256": "91b152e15daba90ec8aaafb741318261672b6ed6f5973a080b230ec8e7d6a6d1",
+  "code_sha256": "24bf6e12f0506ed9d09dfafe45b586da9d3c2ef89f08bc55714f04b7f09779bf"
+}
