@@ -1,4 +1,4 @@
-"""Bundle the paper, original experiments and frozen routing follow-up in their runnable layout."""
+"""Bundle the paper, archived results and experiment code in their runnable layout."""
 import hashlib
 import json
 from pathlib import Path
@@ -30,6 +30,14 @@ def inputs():
     yield from (FOLLOW / n for n in ("README.md", "results.md", "experiment.py", "summarize_followup.py",
                 "protocol.md", "routing-followup.ipynb"))
     yield from (p for p in (FOLLOW / "output").iterdir() if p.suffix in (".json", ".jsonl", ".csv"))
+    for folder, archive in (
+        ("controlled-t4", "AdaRetrieve-controlled-T4-results.zip"),
+        ("budget-depth-t4", "observations.zip"),
+    ):
+        diagnostic = BASE / folder
+        yield diagnostic / archive
+        yield from (path for path in diagnostic.iterdir()
+                    if path.is_file() and path.suffix in (".py", ".ipynb", ".csv", ".md"))
 
 
 def main():

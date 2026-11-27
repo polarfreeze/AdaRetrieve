@@ -1,20 +1,22 @@
 \documentclass{article}
 \usepackage[preprint,nonatbib]{neurips_2024}
 \makeatletter
-\renewcommand{\@noticestring}{Rutgers University, Massive Data Mining course project.}
+\renewcommand{\@noticestring}{Rutgers University, Massive Data Mining course project. Report version 6.}
 \makeatother
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,booktabs,graphicx}
+\usepackage{placeins}
 \usepackage[hidelinks]{hyperref}
 \title{AdaRetrieve: Sequential Retrieval and Reranking\\under Latency Budgets}
 \author{Anuj Bohra \qquad Krisha Borana \qquad Dongquan Yang\\Rutgers University, New Brunswick\\Massive Data Mining}
 \hypersetup{pdftitle={AdaRetrieve: Sequential Retrieval and Reranking under Latency Budgets},pdfauthor={Anuj Bohra, Krisha Borana and Dongquan Yang}}
 \newcommand{\datatable}[1]{\begingroup\setlength{\tabcolsep}{4pt}\input{#1-table}\endgroup}
 \newcommand{\widetable}[1]{\begingroup\setlength{\tabcolsep}{2.6pt}\input{#1-table}\endgroup}
+\input{v6-values}
 \begin{document}
 \maketitle
 \begin{abstract}
-Can a single intermediate decision improve retrieval enough to justify its cost? In our broad benchmark, fixed rank fusion achieved higher middle-budget utility than fully sequential control. We therefore gave a source-trained one-shot router one opportunity to revise its path after the first dense retrieval. Both policies reused the same BM25 ranking. Across three BEIR leave-one-domain-out folds (1,271 test queries), the revision raised equal-domain macro NDCG@10 by 0.0080--0.0089 and measured utility by 0.0079--0.0087 at the three tested budgets. Mean latency increased by 0.11--0.24 ms. SciFact contributed most of the gain. On FiQA, middle-budget utility fell slightly. These results describe an exploratory follow-up on previously studied collections.
+\input{v6-abstract}
 \end{abstract}
 
 \section{Introduction}
@@ -44,7 +46,7 @@ The one-shot and one-revision policies share the same root router and BM25 reuse
 
 \section{Experiments}
 \subsection{Transfer design and evaluation}
-We report three independently timed T4 sessions. The broad benchmark compares sequential control with fixed pipelines, depth choices and a rank-overlap rule. A first routing follow-up tests a source-validated one-shot baseline. A second follow-up measures the effect of BM25 reuse and the incremental value of one revision. Each timing includes query retrieval, feature computation, policy decisions, neural inference and the return of results to the CPU. We compare policies within their own session.
+Five T4 sessions comprise the broad benchmark, the root-only comparison, the BM25 reuse and revision comparison, a matched-prefix and reranker comparison, and a deadline, depth and truncation study. Timings cover query retrieval, feature computation, policy decisions, neural inference and the return of results to the CPU. All treatment contrasts use measurements from the same session.
 
 Each training fold uses 384 queries from each source domain. Each source contributes a further 96 validation queries. FiQA and NFCorpus supply official development splits. SciFact reserves 15\% of its training pool for validation. The three target test sets contain 300 SciFact, 323 NFCorpus and 648 FiQA queries. The tight, middle and loose budgets are 17/37/68 ms for SciFact and NFCorpus and 14/30/56 ms for FiQA. We give each test domain equal weight. The T4 runs use the frozen multi-qa-MiniLM-L6-cos-v1 encoder, exact FAISS inner-product search and the ms-marco-TinyBERT-L2-v2 cross-encoder. Neural inference uses FP16 and a 192-token cap. Source median costs define the three budgets as 35\%, 75\% and 140\% of full-path cost, rounded up to whole milliseconds. Models and indexes are warm, and each query runs alone.
 
@@ -92,18 +94,50 @@ Gains concentrated on SciFact, with smaller gains on NFCorpus despite its more f
 \end{table}
 Across the three folds, the oracle stores 274,218 supervised action values in 140,565 states. A cold rebuild on the T4 took 270.7 s wall time, including 245.8 s to construct shared indexes and query scores. Total process CPU time was 360.5 s. The cold run started with downloaded data, model weights and frozen cost profiles. Policy fitting and live test execution are separate costs.
 
+\subsection{Matched routing and same-session rerankers}
+\input{v6-controlled}
+\begin{table}[htbp]\centering
+\caption{Same-session matched-prefix comparison. Entries subtract the indicated comparator from the one-revision policy and give equal weight to the three held-out domains. Intervals use 4,000 paired query resamples within domains. Latency is in ms.}
+\label{tab:matched}\datatable{matched}
+\end{table}
+\begin{table}[htbp]\centering
+\caption{Same-session MiniLM-L6 minus TinyBERT-L2 at matched reranking depth. Both use the same RRF candidate order and a 192-token limit. Intervals and means use the same domain weighting as Table~\ref{tab:matched}.}
+\label{tab:ce-controlled}\datatable{cross-encoder}
+\end{table}
+
+\subsection{Source-quantile admission and FiQA deadlines}
+\input{v6-deadline}
+\begin{table}[htbp]\centering
+\caption{FiQA at 14 ms in the admission session. Over counts end-to-end times above 14 ms. Excess averages the additional time among those queries. Time columns are in ms.}
+\label{tab:deadline}\widetable{deadline}
+\end{table}
+\begin{table}[htbp]\centering
+\caption{FiQA at 14 ms relative to same-session p50. The late-rate change is in percentage points (pp). Intervals use 4,000 paired query resamples.}
+\label{tab:deadline-delta}\widetable{deadline-delta}
+\end{table}
+
+\subsection{Candidate depth and input truncation}
+\input{v6-depth}
+\begin{table}[htbp]\centering
+\caption{Fixed RRF candidate-depth grid using TinyBERT at 192 tokens. Each retriever contributes up to $K$ documents. Recall is mean per-query recall over the deduplicated candidate union. RRF and CE columns report NDCG@10. CE50 reranks up to 50 available documents. Times are end to end.}
+\label{tab:depth}\widetable{candidate-depth}
+\end{table}
+\begin{table}[htbp]\centering
+\caption{Increasing only the TinyBERT input limit at $K=64$ and reranking depth 24. Cut is the percentage of input pairs exceeding 192 tokens, including special tokens. The two limit columns report NDCG@10. Changes use 384 minus 192. Utility uses the middle budget for each domain.}
+\label{tab:long}\widetable{long-input}
+\end{table}
+
+\FloatBarrier
 \section{Discussion}
-The most informative contrast holds both the root router and the BM25 implementation fixed. It shows what the opportunity to reconsider a path buys at serving time. Reusing lexical results alone had less consistent end-to-end effects. A lower estimated expansion cost can admit a longer path, and routes that never expand gain no time from avoiding a second lexical search. SciFact and NFCorpus also show that revising more frequently does not necessarily yield more utility.
+\input{v6-discussion}
 
 The broad benchmark's learned stopping rule also affects budget compliance. Removing it changes middle-budget macro NDCG@10 by less than 0.001 while increasing the overrun rate from 23.8\% to 35.6\%. On FiQA, the sequential policy exceeded 30 ms on 385 of 648 queries in that session. Excess latency averaged 3.84 ms among overruns and 2.28 ms over all queries. Appendix~\ref{app:diagnostics} gives the full serving breakdown and observed frontiers.
 
 \section{Limitations and future work}
-The three collections contain 3,633 to 57,638 documents. One deterministic training sample per size and a single warm timing per configuration limit what can be inferred about sampling variability and deployment latency. Bootstrap intervals condition on these domains, fitted models and recorded timings. The three target collections had already been evaluated when the follow-ups were designed. Only source labels were used to fit and tune each fold. Differences between the fully sequential GBDT and root-only ridge router also reflect their different model classes.
-
-A prospective test could freeze the revision policy before selecting additional collections, then repeat timings across runtimes and hardware. Reporting both the frequency and magnitude of overruns would show whether tail-aware cost estimates improve deadline compliance, especially on collections with a slow initial retrieval. Repeating the source splits would also quantify how much of the apparent gain depends on the small validation samples.
+\input{v6-limitations}
 
 \section{Conclusion}
-For the equal-weight mean over the three held-out domains, giving the reused one-shot router one opportunity to revise increased measured utility at all three tested budgets. Most of the gain came from SciFact. The fully sequential policy attained the highest middle-budget ranking quality among the five policies in the last session. Its longer running time, and the strong utility of fixed RRF in the earlier runs, make the choice of router depend on which outcome the application values.
+\input{v6-conclusion}
 
 \begin{thebibliography}{9}
 \bibitem{beir} N. Thakur, N. Reimers, A. R{\"u}ckl{\'e}, A. Srivastava, and I. Gurevych. \href{https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/65b9eea6e1cc6bb9f0cd2a47751a186f-Paper-round2.pdf}{BEIR: A heterogeneous benchmark for zero-shot evaluation of information retrieval models}. NeurIPS Datasets and Benchmarks, 2021.
@@ -113,8 +147,14 @@ For the equal-weight mean over the three held-out domains, giving the reused one
 \bibitem{trunc} C. Meng, N. Arabzadeh, A. Askari, M. Aliannejadi, and M. de Rijke. \href{https://arxiv.org/abs/2404.18185}{Ranked list truncation for large language model-based re-ranking}. SIGIR, 2024.
 \end{thebibliography}
 
-\clearpage
 \appendix
+\section{Matched routing by domain}\label{app:matched}
+\begin{table}[h!]\centering
+\caption{Matched-prefix revision minus one-shot by held-out domain. Forks reach the first dense action and changes count actual revisions to the remaining suffix. Times are in ms.}
+\label{tab:matched-domain}\datatable{matched-domain}
+\end{table}
+The project archive includes each domain and budget for the same-session comparisons, FiQA stage timings, each fold's frozen latency quantiles, and the full depth and input-limit grids. It also includes the measured rankings and timings used to regenerate these tables.
+\clearpage
 \section{Serving, frontiers and source learning curves}\label{app:diagnostics}
 \begin{table}[h!]\centering
 \caption{Broad benchmark, sequential policy. Over/total gives the number of overrunning queries. Excess/all averages $\max(0,t_q-B)$ over all queries. Excess/over uses only queries exceeding $B$. All times are ms.}

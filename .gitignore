@@ -9,6 +9,8 @@ __pycache__/
 *.aux
 *.out
 *.zip
+!/controlled-t4/AdaRetrieve-controlled-T4-results.zip
+!/budget-depth-t4/observations.zip
 /project/artifacts/
 /project/cache/
 /project/data/raw/

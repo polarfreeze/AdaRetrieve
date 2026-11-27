@@ -128,6 +128,8 @@ def tables():
 
 def main():
     tables()
+    from report_v6_tables import main as followup_tables
+    followup_tables()
     with tempfile.TemporaryDirectory() as tmp:
         subprocess.run(["tectonic", "--outdir", tmp, "main.tex"], cwd=PAPER, check=True)
         shutil.copyfile(Path(tmp) / "main.pdf", ROOT / "AdaRetrieve-report.pdf")

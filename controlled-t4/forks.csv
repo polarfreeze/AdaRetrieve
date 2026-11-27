@@ -1,0 +1,10 @@
+﻿domain,budget_ms,queries,dense_forks,revisions
+scifact,17,300,300,37
+scifact,37,300,300,39
+scifact,68,300,300,31
+nfcorpus,17,323,318,89
+nfcorpus,37,323,323,97
+nfcorpus,68,323,323,97
+fiqa,14,648,529,0
+fiqa,30,648,595,1
+fiqa,56,648,604,8
